@@ -1,6 +1,3 @@
-/* eslint linebreak-style: ['error', 'windows'] */
-/*eslint-disable*/
-
 const forms = {
   getAllInfo: {form: document.querySelector('#getAllInfo')},
   findByID: {
@@ -120,7 +117,7 @@ function templateFunc (func, inputs, textToOutput) {
   return function (evt) {
     evt.preventDefault();
     addSpinner();
-    
+
     const values = inputs.map(item => item.value.trim());
     func.apply(null, values)
 

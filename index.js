@@ -33,92 +33,151 @@ const forms = {
 };
 
 const spinner = document.querySelector('#spinner');
-
-
 const outputField = document.querySelector('#outputField');
 
+// forms.getAllInfo.form.addEventListener('submit', handleGetAllInfoFormSubmit);
+// forms.findByID.form.addEventListener('submit', handleFindByIDFormSubmit);
+// forms.addNewUser.form.addEventListener('submit', handleAddNewUserFormSubmit);
+// forms.removeUser.form.addEventListener('submit', handleRemoveUserFormSubmit);
+// forms.updateUser.form.addEventListener('submit', handleUpdateUserFormSubmit);
+
+// function handleGetAllInfoFormSubmit(evt) {
+//   evt.preventDefault();
+//   addSpinner();
+//   getUsers().then(data => {
+//     removeSpinner();
+//     outputField.innerHTML = '<p class="output__text">Users info has been fetched</p>' + drawUserInfoTable(data);
+//   })
+//   .catch(error => {
+//     removeSpinner();
+//     outputField.innerHTML = `<p class="output__text">${error}</p>`;
+//   });
+// }
+
+// function handleFindByIDFormSubmit(evt) {
+//   evt.preventDefault();
+//   addSpinner();
+//   getUsers(forms.findByID.inputs.userID.value.trim())
+//   .then(data => {
+//     removeSpinner();
+//     outputField.innerHTML = '<p class="output__text">A single user info has been fetched</p>' + drawUserInfoTable(data);
+//   })
+//   .catch(error => {
+//     removeSpinner();
+//     outputField.innerHTML = `<p class="output__text">${error}</p>`;
+//   });
+//   forms.findByID.form.reset();
+// }
+
+// function handleAddNewUserFormSubmit(evt) {
+//   evt.preventDefault();
+//   addSpinner();
+//   addUser(forms.addNewUser.inputs.userName.value.trim(), forms.addNewUser.inputs.userAge.value.trim())
+//   .then(data => {
+//     removeSpinner();
+//     outputField.innerHTML = '<p class="output__text">A new user was created</p>' + drawUserInfoTable(data);
+//   })
+//   .catch(error => {
+//     removeSpinner();
+//     outputField.innerHTML = `<p class="output__text">${error}</p>`;
+//   });
+//   forms.addNewUser.form.reset();
+// }
+
+// function handleRemoveUserFormSubmit(evt) {
+//   evt.preventDefault();
+//   addSpinner();
+//   removeUser(forms.removeUser.inputs.userID.value.trim())
+//   .then(data => {
+//     removeSpinner();
+//     outputField.innerHTML = '<p class="output__text">User has been deleted</p>' + drawUserInfoTable(data);
+//   })
+//   .catch(error => {
+//     removeSpinner();
+//     outputField.innerHTML = `<p class="output__text">${error}</p>`;
+//   });
+//   forms.removeUser.form.reset();
+// }
+
+// function handleUpdateUserFormSubmit(evt) {
+//   evt.preventDefault();
+//   addSpinner();
+//   updateUser(forms.updateUser.inputs.userID.value.trim(), forms.updateUser.inputs.userName.value.trim(), forms.updateUser.inputs.userAge.value.trim())
+//   .then(data => {
+//     removeSpinner();
+//     outputField.innerHTML = '<p class="output__text">User info has been updated</p>' + drawUserInfoTable(data);
+//   })
+//   .catch(error => {
+//     removeSpinner();
+//     outputField.innerHTML = `<p class="output__text">${error}</p>`;
+//   });
+//   forms.updateUser.form.reset();
+// }
+
+//***********************************TEMPLATE***************************************//
+
+function templateFunc (func, inputs, textToOutput) {
+  return function (evt) {
+    evt.preventDefault();
+    addSpinner();
+    
+    const values = inputs.map(item => item.value.trim());
+    func.apply(null, values)
+
+    .then(data => {
+      removeSpinner();
+      outputField.innerHTML = `<p class="output__text">${textToOutput}</p>` + drawUserInfoTable(data);
+    })
+    .catch(error => {
+      removeSpinner();
+      outputField.innerHTML = `<p class="output__text">${error}</p>`;
+    });
+    this.reset();
+  }
+}
+
+//*********************************USING TEMPLATE**************************************//
+
+const handleGetAllInfoFormSubmit = templateFunc(getUsers, 
+                                                [], 
+                                                'Users info has been fetched');
 forms.getAllInfo.form.addEventListener('submit', handleGetAllInfoFormSubmit);
+
+const handleFindByIDFormSubmit = templateFunc(getUsers, 
+                                              [
+                                                forms.findByID.inputs.userID
+                                              ], 
+                                              'A single user info has been fetched');
 forms.findByID.form.addEventListener('submit', handleFindByIDFormSubmit);
+
+const handleAddNewUserFormSubmit = templateFunc(addUser, 
+                                                [
+                                                  forms.addNewUser.inputs.userName, 
+                                                  forms.addNewUser.inputs.userAge
+                                                ], 
+                                                'A new user has been created');
 forms.addNewUser.form.addEventListener('submit', handleAddNewUserFormSubmit);
+
+const handleRemoveUserFormSubmit = templateFunc(removeUser, 
+                                                [
+                                                  forms.removeUser.inputs.userID
+                                                ], 
+                                                'The user has been deleted');
 forms.removeUser.form.addEventListener('submit', handleRemoveUserFormSubmit);
+
+const handleUpdateUserFormSubmit = templateFunc(updateUser, 
+                                                [
+                                                  forms.updateUser.inputs.userID, 
+                                                  forms.updateUser.inputs.userName, 
+                                                  forms.updateUser.inputs.userAge
+                                                ], 
+                                                'The user info has been updated');
 forms.updateUser.form.addEventListener('submit', handleUpdateUserFormSubmit);
 
-function handleGetAllInfoFormSubmit(evt) {
-  evt.preventDefault();
-  addSpinner();
-  getUsers().then(data => {
-    removeSpinner();
-    outputField.innerHTML = '<p class="output__text">Users info has been fetched</p>' + drawUserInfoTable(data);
-  })
-  .catch(error => {
-    removeSpinner();
-    outputField.innerHTML = `<p class="output__text">${error}</p>`;
-  });
-}
-
-function handleFindByIDFormSubmit(evt) {
-  evt.preventDefault();
-  addSpinner();
-  getUsers(forms.findByID.inputs.userID.value.trim())
-  .then(data => {
-    removeSpinner();
-    outputField.innerHTML = '<p class="output__text">A single user info has been fetched</p>' + drawUserInfoTable(data);
-  })
-  .catch(error => {
-    removeSpinner();
-    outputField.innerHTML = `<p class="output__text">${error}</p>`;
-  });
-  forms.findByID.form.reset();
-}
-
-function handleAddNewUserFormSubmit(evt) {
-  evt.preventDefault();
-  addSpinner();
-  addUser(forms.addNewUser.inputs.userName.value.trim(), forms.addNewUser.inputs.userAge.value.trim())
-  .then(data => {
-    removeSpinner();
-    outputField.innerHTML = '<p class="output__text">A new user was created</p>' + drawUserInfoTable(data);
-  })
-  .catch(error => {
-    removeSpinner();
-    outputField.innerHTML = `<p class="output__text">${error}</p>`;
-  });
-  forms.addNewUser.form.reset();
-}
-
-function handleRemoveUserFormSubmit(evt) {
-  evt.preventDefault();
-  addSpinner();
-  removeUser(forms.removeUser.inputs.userID.value.trim())
-  .then(data => {
-    removeSpinner();
-    outputField.innerHTML = '<p class="output__text">User has been deleted</p>' + drawUserInfoTable(data);
-  })
-  .catch(error => {
-    removeSpinner();
-    outputField.innerHTML = `<p class="output__text">${error}</p>`;
-  });
-  forms.removeUser.form.reset();
-}
-
-function handleUpdateUserFormSubmit(evt) {
-  evt.preventDefault();
-  addSpinner();
-  updateUser(forms.updateUser.inputs.userID.value.trim(), forms.updateUser.inputs.userName.value.trim(), forms.updateUser.inputs.userAge.value.trim())
-  .then(data => {
-    removeSpinner();
-    outputField.innerHTML = '<p class="output__text">User info has been updated</p>' + drawUserInfoTable(data);
-  })
-  .catch(error => {
-    removeSpinner();
-    outputField.innerHTML = `<p class="output__text">${error}</p>`;
-  });
-  forms.updateUser.form.reset();
-}
-
+//********************************FUNCTIONS*************************************//
 
 const apiUrl = 'https://test-users-api.herokuapp.com/users/';
-//*****************************************************************************************//
+
 function getUsers(id = '') {
 
   return window.fetch(apiUrl + id)
@@ -135,7 +194,9 @@ function getUsers(id = '') {
       throw new Error(`${data.status}: ${data.errors}:((((`);
     })
 }
-//****************************************************************************************//
+
+//*****
+
 function addUser(name, age) {
   return window.fetch(apiUrl, {
     method: 'POST',
@@ -159,7 +220,8 @@ function addUser(name, age) {
   })
 }
 
-//****************************************************************************************//
+//*****
+
 function removeUser(id) {
   return window.fetch(apiUrl + id, {
     method: 'DELETE',
@@ -169,25 +231,20 @@ function removeUser(id) {
     }
   })
   .then(response => {
-    // console.log(response);
     if (response.ok) {
       return response.json();
     }
     throw new Error('Impossible to delete');
   })
   .then(data => {
-    // console.log(data);
     if (data.status === 200 || data.status === 201){
       return data.data;
     }
     throw new Error(`${data.status}: ${data.errors}:((((`);
   })
-  // .catch(error => {
-  //   throw error;
-  // });
 }
 
-//*********************************************************************************//
+//*****
 
 function updateUser(id, name, age) {
   return window.fetch(apiUrl + id, {
@@ -199,7 +256,6 @@ function updateUser(id, name, age) {
     }
   })
   .then(response => {
-    // console.log(response);
     if (response.ok) {
       return response.json();
     }
@@ -212,14 +268,11 @@ function updateUser(id, name, age) {
     }
     throw new Error(`${data.status}: ${data.errors}:((((`);
   })
-  // .catch(error => {
-  //   throw error;
-  // });
 }
 
 
 
-//*******************************************************************************//
+//*********************************AUX FUNCTIONS**********************************************//
 
 function drawUserInfoTable(data) {
 

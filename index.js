@@ -32,6 +32,8 @@ const forms = {
   },
 };
 
+const spinner = document.querySelector('#spinner');
+
 
 const outputField = document.querySelector('#outputField');
 
@@ -43,21 +45,27 @@ forms.updateUser.form.addEventListener('submit', handleUpdateUserFormSubmit);
 
 function handleGetAllInfoFormSubmit(evt) {
   evt.preventDefault();
+  addSpinner();
   getUsers().then(data => {
+    removeSpinner();
     outputField.innerHTML = '<p class="output__text">Users info has been fetched</p>' + drawUserInfoTable(data);
   })
   .catch(error => {
+    removeSpinner();
     outputField.innerHTML = `<p class="output__text">${error}</p>`;
   });
 }
 
 function handleFindByIDFormSubmit(evt) {
   evt.preventDefault();
+  addSpinner();
   getUsers(forms.findByID.inputs.userID.value.trim())
   .then(data => {
+    removeSpinner();
     outputField.innerHTML = '<p class="output__text">A single user info has been fetched</p>' + drawUserInfoTable(data);
   })
   .catch(error => {
+    removeSpinner();
     outputField.innerHTML = `<p class="output__text">${error}</p>`;
   });
   forms.findByID.form.reset();
@@ -65,12 +73,14 @@ function handleFindByIDFormSubmit(evt) {
 
 function handleAddNewUserFormSubmit(evt) {
   evt.preventDefault();
+  addSpinner();
   addUser(forms.addNewUser.inputs.userName.value.trim(), forms.addNewUser.inputs.userAge.value.trim())
   .then(data => {
-   // console.log(data);
+    removeSpinner();
     outputField.innerHTML = '<p class="output__text">A new user was created</p>' + drawUserInfoTable(data);
   })
   .catch(error => {
+    removeSpinner();
     outputField.innerHTML = `<p class="output__text">${error}</p>`;
   });
   forms.addNewUser.form.reset();
@@ -78,12 +88,14 @@ function handleAddNewUserFormSubmit(evt) {
 
 function handleRemoveUserFormSubmit(evt) {
   evt.preventDefault();
+  addSpinner();
   removeUser(forms.removeUser.inputs.userID.value.trim())
   .then(data => {
-    // console.log(data);
+    removeSpinner();
     outputField.innerHTML = '<p class="output__text">User has been deleted</p>' + drawUserInfoTable(data);
   })
   .catch(error => {
+    removeSpinner();
     outputField.innerHTML = `<p class="output__text">${error}</p>`;
   });
   forms.removeUser.form.reset();
@@ -91,16 +103,19 @@ function handleRemoveUserFormSubmit(evt) {
 
 function handleUpdateUserFormSubmit(evt) {
   evt.preventDefault();
+  addSpinner();
   updateUser(forms.updateUser.inputs.userID.value.trim(), forms.updateUser.inputs.userName.value.trim(), forms.updateUser.inputs.userAge.value.trim())
   .then(data => {
-    //  console.log(data);
-     outputField.innerHTML = '<p class="output__text">User info has been updated</p>' + drawUserInfoTable(data);
+    removeSpinner();
+    outputField.innerHTML = '<p class="output__text">User info has been updated</p>' + drawUserInfoTable(data);
   })
   .catch(error => {
+    removeSpinner();
     outputField.innerHTML = `<p class="output__text">${error}</p>`;
   });
   forms.updateUser.form.reset();
 }
+
 
 const apiUrl = 'https://test-users-api.herokuapp.com/users/';
 //*****************************************************************************************//
@@ -119,9 +134,6 @@ function getUsers(id = '') {
       }
       throw new Error(`${data.status}: ${data.errors}:((((`);
     })
-    // .catch(error => {
-    //   throw error;
-    // });
 }
 //****************************************************************************************//
 function addUser(name, age) {
@@ -134,7 +146,6 @@ function addUser(name, age) {
     }
   })
   .then(response => {
-    // console.log(response);
     if (response.ok) {
       return response.json();
     }
@@ -146,16 +157,12 @@ function addUser(name, age) {
     }
     throw new Error(`${data.status}: ${data.errors}:((((`);
   })
-  // .catch(error => {
-  //   throw error;
-  // });
 }
 
 //****************************************************************************************//
 function removeUser(id) {
   return window.fetch(apiUrl + id, {
     method: 'DELETE',
-    // body: JSON.stringify({name, age}),
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -251,4 +258,12 @@ function drawUserInfoTable(data) {
                  <td>${data.age}</td></tr>`
   }
   return tableBeginning + tableBody + tableEnd;
+}
+
+function addSpinner() {
+  spinner.classList.add("spinner--shown");
+}
+
+function removeSpinner() {
+  spinner.classList.remove("spinner--shown");
 }
